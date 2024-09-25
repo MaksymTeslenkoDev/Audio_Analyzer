@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "$id": "schema:dotenv",
+  "required": ["MONGO_URL", "PORT"],
+  "properties": {
+    "NODE_ENV": {
+      "type": "string",
+      "default": "development"
+    },
+    "MONGO_URL": {
+      "type": "string"
+    },
+    "FASTIFY_ADDRESS": {
+      "type": "string",
+      "default": "0.0.0.0"
+    },
+    "PORT": {
+      "type": "number",
+      "default": 3000
+    }
+  }
+}

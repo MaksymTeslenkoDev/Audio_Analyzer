@@ -1,11 +1,25 @@
 services: 
+  mongodb:
+    container_name: mongodb
+    image: mongo:5
+    ports:
+      - "27017:27017"
+    networks:
+      - app_network
+
   call_service:
     container_name: call_service
     build: ./call_service
+    env_file:
+      - ./call_service/.env
     ports: 
       - "3000:3000"
+    depends_on:
+      - mongodb
     networks:
-      - app_network
+      - app_network  
+    volumes:
+      - ./call_service:/home/app/node
   
 networks:
   app_network:
