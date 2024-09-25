@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "$id": "schema:call:add:body",
+  "required": ["audio_url"],
+  "additionalProperties": false,
+  "properties": {
+    "audio_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^http?://.*\\.(wav|mp3)$"
+    }
+  }
+}
