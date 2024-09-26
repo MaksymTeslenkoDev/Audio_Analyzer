@@ -9,7 +9,9 @@ services:
 
   call_service:
     container_name: call_service
-    build: ./call_service
+    build: 
+      context: ./call_service
+      dockerfile: Dockerfile
     env_file:
       - ./call_service/.env
     ports: 
@@ -18,8 +20,29 @@ services:
       - mongodb
     networks:
       - app_network  
+    profiles:
+      - prod
+  
+  call_service_dev:
+    container_name: call_service_dev
+    build: 
+      context: ./call_service
+      dockerfile: Dockerfile.dev 
+    env_file:
+      - ./call_service/.env
+    ports: 
+      - "3000:3000"
+      - "9320:9320"
+    depends_on:
+      - mongodb
+    networks:
+      - app_network  
     volumes:
-      - ./call_service:/home/app/node
+      - ./call_service:/home/app/node             # Mount code directory
+      - /home/app/node/node_modules  # Prevent overwriting node_modules
+      - /home/app/node/models        # Ensure models are accessible
+    profiles:
+      - dev
   
 networks:
   app_network:
