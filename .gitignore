@@ -5,6 +5,8 @@ logs
 *.log
 npm-debug.log*
 
+*.mp3
+*.wav
 # Runtime data
 pids
 *.pid

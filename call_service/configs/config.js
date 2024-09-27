@@ -14,8 +14,12 @@ module.exports = fp(
       },
       server: {
         host: fastify.secrets.HOST,
-        port: fastify.secrets.PORT
-      }
+        port: fastify.secrets.PORT,
+      },
+      path: {
+        app: process.cwd(),
+        audio: 'asssets/audio',
+      },
     });
   },
   {

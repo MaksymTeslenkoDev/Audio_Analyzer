@@ -7,7 +7,7 @@
     "audio_url": {
       "type": "string",
       "format": "uri",
-      "pattern": "^http?://.*\\.(wav|mp3)$"
+      "pattern": "^https?://.*\\.(wav|mp3)$"
     }
   }
 }

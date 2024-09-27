@@ -38,7 +38,7 @@ services:
     networks:
       - app_network  
     volumes:
-      - ./call_service:/home/app/node             # Mount code directory
+      - ./call_service:/home/app/node # Mount code directory
       - /home/app/node/node_modules  # Prevent overwriting node_modules
       - /home/app/node/models        # Ensure models are accessible
     profiles:
