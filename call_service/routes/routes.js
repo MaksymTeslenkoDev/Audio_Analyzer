@@ -1,8 +1,5 @@
 'use strict';
 
-const fs = require('node:fs');
-const { pipeline } = require('node:stream/promises');
-const path = require('node:path');
 const { getFileName } = require('../src/utils');
 
 module.exports = async function callServiceRoutes(fastify, opts) {
@@ -17,13 +14,16 @@ module.exports = async function callServiceRoutes(fastify, opts) {
       fastify.log.info(`Call service with audio url: ${audio_url}`);
       const fileName = getFileName(audio_url);
       const audio = await fetch(audio_url);
-      const readable = audio.body;
-      await pipeline(
-        readable,
-        fs.createWriteStream(`assets/audio/${fileName}`),
-      );
 
-      return { message: 'Call service', audio_url };
+      let transcription = null;
+
+      const buffer = []
+
+      for await (let chunk of audio.body){
+        buffer.push(chunk);
+      }
+
+      return { message: 'Call service', audio_url, transcription };
     },
   });
 };

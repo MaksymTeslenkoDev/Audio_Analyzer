@@ -1,4 +1,4 @@
-FROM node:18 as builder
+FROM --platform=linux/amd64 node:18-bullseye-slim as builder
 
 WORKDIR /build
 COPY package.json ./
@@ -6,24 +6,29 @@ COPY package-lock.json ./
 ARG NPM_TOKEN
 ENV NPM_TOKEN $NPM_TOKEN
 RUN npm ci --ignore-scripts
-FROM node:18
+
+FROM --platform=linux/amd64 node:18-bullseye-slim
 RUN apt-get update && apt-get install -y dumb-init
 ENV HOME=/home/app
 ENV APP_HOME=$HOME/node/
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 WORKDIR $APP_HOME
 
 RUN apt-get update && \
-    apt-get install -y ffmpeg &&\
+    apt-get install -y ffmpeg unzip build-essential python3 wget &&\
     rm -rf /var/lib/apt/lists/*
+
 
 RUN mkdir -p models && \
     cd models && \
-    wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm && \
-    wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer
+    wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip && \
+    unzip vosk-model-small-en-us-0.15.zip && \
+    rm vosk-model-small-en-us-0.15.zip
 
+# vosk-model-en-us-0.22.zip
 COPY --chown=node:node . $APP_HOME
 COPY --chown=node:node --from=builder /build $APP_HOME
+
 USER node
 EXPOSE 3000
 EXPOSE 9320
