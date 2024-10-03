@@ -1,0 +1,1 @@
+curl -X POST http://localhost:3000/call -H "Content-Type: application/json" -d '{"audio_url": "https://www.voiptroubleshooter.com/open_speech/american/OSR_us_000_0010_8k.wav"}'
