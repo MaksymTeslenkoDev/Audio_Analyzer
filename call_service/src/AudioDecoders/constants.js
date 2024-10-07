@@ -7,6 +7,16 @@ const ffmpegDecoderAudioSettings = {
   AUDIO_CODEC: 'pcm_s16le',
 };
 
+/**
+ * Enum for supported audio formats.
+ * @enum {string}
+ */
+const AudioFormat = {
+  WAV: 'wav',
+  MP3: 'mp3',
+};
+
 module.exports = {
-    ffmpegDecoderAudioSettings
-}
+  ffmpegDecoderAudioSettings,
+  AudioFormat
+};

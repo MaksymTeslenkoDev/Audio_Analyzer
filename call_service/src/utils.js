@@ -7,4 +7,14 @@ function getFileName(url) {
   return myURL.pathname.split('/').pop();
 }
 
-module.exports = { getFileName };
+function parseFileUrl(url) {
+  const myURL = new URL(url);
+  const fileName = myURL.pathname.split('/').pop();
+  const format = fileName.split('.').pop();
+  return {
+    fileName,
+    format,
+  };
+}
+
+module.exports = { parseFileUrl };

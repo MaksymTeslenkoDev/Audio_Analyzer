@@ -13,43 +13,29 @@ module.exports = async function callServiceRoutes(fastify, opts) {
     },
     handler: async function addCallHandler(request, reply) {
       const { audio_url } = request.body;
+      const { fileName, format } = request;
       fastify.log.info(`Call service with audio url: ${audio_url}`);
-      const fileName = getFileName(audio_url);
 
       const rec = fastify.vosk.recognize(sample_rate);
       rec.setMaxAlternatives(0);
       rec.setWords(true);
       rec.setPartialWords(true);
 
-      const transcription = await transcribeAudio({
-        audio: audio_url,
-        recognizer: rec,
-        logger: fastify.log,
-      });
+      const audioDecoderStream = await fastify.ffmpeg.decodeAudio(
+        format,
+        audio_url,
+      );
+
+      const transcription = await transcribeAudio(audioDecoderStream, rec);
 
       return { fileName, transcription };
     },
   });
 };
 
-async function transcribeAudio({ audio, recognizer, logger }) {
-  const ffmpegProcess = ffmpeg()
-    .input(audio)
-    .inputFormat('wav')
-    .format('s16le')
-    .audioFrequency(sample_rate)
-    .audioChannels(1)
-    .audioCodec('pcm_s16le')
-    .on('error', (err) => {
-      logger.error(`FFmpeg error: ${err.message}`);
-      recognizer.free();
-      throw new Error(err.message);
-    });
-
+async function transcribeAudio(audioDecoderStream, recognizer) {
   try {
-    const ffmpegStream = ffmpegProcess.pipe();
-
-    for await (let chunk of ffmpegStream) {
+    for await (let chunk of audioDecoderStream) {
       recognizer.acceptWaveform(chunk);
     }
     const result = recognizer.finalResult();
